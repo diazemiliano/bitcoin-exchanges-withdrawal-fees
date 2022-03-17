@@ -1,0 +1,97 @@
+[
+  {
+    "exchange": "Lemon",
+    "onchain": 0.00002,
+    "lightning": ""
+  },
+  {
+    "exchange": "Satoshi",
+    "onchain": 0.0001,
+    "lightning": ""
+  },
+  {
+    "exchange": "Buenbit",
+    "onchain": 0.00016,
+    "lightning": ""
+  },
+  {
+    "exchange": "Ripio",
+    "onchain": 0.00029,
+    "lightning": ""
+  },
+  {
+    "exchange": "Belo",
+    "onchain": 0.0002,
+    "lightning": 0
+  },
+  {
+    "exchange": "Decrypto",
+    "onchain": 0,
+    "lightning": ""
+  },
+  {
+    "exchange": "Bitso",
+    "onchain": 0.00001526,
+    "lightning": ""
+  },
+  {
+    "exchange": "Let'sBit",
+    "onchain": 0.00005,
+    "lightning": 0.00005
+  },
+  {
+    "exchange": "Bitex",
+    "onchain": 0,
+    "lightning": ""
+  },
+  {
+    "exchange": "Buda",
+    "onchain": 0.00005,
+    "lightning": 0
+  },
+  {
+    "exchange": "CryptoMkt",
+    "onchain": 0.0004,
+    "lightning": ""
+  },
+  {
+    "exchange": "Binance",
+    "onchain": 0.0005,
+    "lightning": ""
+  },
+  {
+    "exchange": "Ftx",
+    "onchain": 0,
+    "lightning": ""
+  },
+  {
+    "exchange": "Kraken",
+    "onchain": 0.00002,
+    "lightning": ""
+  },
+  {
+    "exchange": "Bitfinex",
+    "onchain": 0.0004,
+    "lightning": ""
+  },
+  {
+    "exchange": "ocalbitcoin",
+    "onchain": 0.00006,
+    "lightning": ""
+  },
+  {
+    "exchange": "okEx",
+    "onchain": 0.0002,
+    "lightning": 0
+  },
+  {
+    "exchange": "Kucoin",
+    "onchain": 0.0005,
+    "lightning": ""
+  },
+  {
+    "exchange": "ArgenBTC",
+    "onchain": 0.00004,
+    "lightning": ""
+  }
+]

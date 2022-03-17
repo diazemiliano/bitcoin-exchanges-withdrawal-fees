@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/quasar@2.6.0/dist/quasar.prod.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body>
+    <div id="q-app">
+      <q-layout class="bg-grey-1">
+        <div class="q-pa-lg">
+          <div class="row justify-center">
+            <div class="col-sm-12 col-md-6 text-center">
+              <h1 class="q-mb-sm">
+                <q-avatar size="112px" color="orange" text-color="white">
+                  ₿
+                </q-avatar>
+              </h1>
+              <h3 class="text-weight-light">Exchanges Withdrawal Fees</h3>
+              <q-table
+                :columns="columns"
+                :pagination="pagination"
+                :rows="rows"
+                dark
+                hide-bottom
+                row-key="name"
+              >
+                <template v-slot:header-cell-usd="props">
+                  <q-th :props="props">
+                    {{ props.col.label }}
+                    <sup><a href="#note1" class="text-white">1</a></sup>
+                  </q-th>
+                </template>
+                <template v-slot:body="props">
+                  <q-tr :props="props">
+                    <q-td
+                      :key="col.name"
+                      :props="props"
+                      v-for="col in props.cols"
+                    >
+                      <template
+                        v-if="props.row?.highlight && col.name === 'exchange'"
+                      >
+                        {{ col.value }}
+                        <q-badge rounded :color="props.row.highlight.color">
+                          {{props.row.highlight.label}}</q-badge
+                        >
+                      </template>
+                      <template v-else> {{ col.value }} </template>
+                    </q-td>
+                  </q-tr>
+                </template>
+              </q-table>
+              <p class="q-pt-md q-mb-sm text-left" id="note1">
+                <sup>1</sup> USD Exchange Rates from
+                <a
+                  href="https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#symbol-price-ticker"
+                  >Binance Rest Api</a
+                >. Now: ${{btcPrice}}
+              </p>
+              <p class="text-left">
+                Special thanks to
+                <a href="https://twitter.com/bourbonni">@bourbonni</a>
+              </p>
+                <p class="text-left">
+                    Contribute keeping fees updated
+                  <a href="https://github.com/diazemiliano/bitcoin-exchanges-withdrawal-fees">diazemiliano/bitcoin-exchanges-withdrawal-fees</a>
+                </p>
+            </div>
+          </div>
+        </div>
+      </q-layout>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@2.6.0/dist/quasar.umd.prod.js"></script>
+    <script type="module">
+      function httpGet(theUrl) {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false);
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+      }
+
+      const data = JSON.parse(httpGet("data.json"));
+
+      let withoutLightning = [];
+      let withLightning = data
+        .filter(function (item) {
+          if (item.lightning !== "") {
+            return item;
+          } else {
+            withoutLightning.push(item);
+          }
+        })
+        .sort(function (a, b) {
+          if (a.lightning > b.lightning) return 1;
+          if (a.lightning < b.lightning) return -1;
+          if (a.onchain > b.onchain) return 1;
+          if (a.onchain < b.onchain) return -1;
+        });
+
+      withoutLightning.sort(function (a, b) {
+        if (a.onchain > b.onchain) return 1;
+        if (a.onchain < b.onchain) return -1;
+      });
+
+      /*   withLightning[0].highlight = {
+        color: "blue",
+        label: "Best for Lightning",
+      };
+      withoutLightning[0].highlight = {
+        color: "orange",
+        label: "Best for On Chain",
+      };
+*/
+      const orderedData = [...withLightning, ...withoutLightning];
+      const btcPrice = JSON.parse(
+        httpGet("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
+      ).price;
+      const app = Vue.createApp({
+        setup() {
+          return {};
+        },
+        data() {
+          return {
+            btcPrice: Number(btcPrice).toFixed(2),
+            pagination: {
+              sortBy: "desc",
+              descending: false,
+              page: 0,
+              rowsPerPage: 0,
+            },
+            columns: [
+              {
+                name: "exchange",
+                required: true,
+                label: "Exchange",
+                align: "left",
+                field: "exchange",
+                format: (val) => `${val}`,
+                sortable: true,
+              },
+              {
+                name: "onchain",
+                align: "left",
+                label: "On Chain (BTC)",
+                field: "onchain",
+                format: (val) => val.toFixed(6),
+                sortable: true,
+              },
+              {
+                name: "usd",
+                align: "left",
+                label: "USD",
+                field: "usd",
+                format: (val, row) => (btcPrice * row.onchain).toFixed(2),
+                sortable: true,
+              },
+              {
+                name: "lightning",
+                align: "left",
+                label: "Lightning",
+                field: "lightning",
+                format: (val) =>
+                  val !== "" ? (val === 0 ? 0 : val.toFixed(6)) : "",
+                classes: (val) => {
+                  return val.lightning !== "" ? "bg-green-6" : "bg-red-6";
+                },
+                sortable: true,
+              },
+            ],
+
+            rows: orderedData,
+          };
+        },
+      });
+
+      app.use(Quasar);
+      app.mount("#q-app");
+    </script>
+  </body>
+</html>
